@@ -1,13 +1,309 @@
-<!DOCTYPE html>
-<html lang="">
+<!doctype html>
+<html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="/favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vite App</title>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Design Editor Demo</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem;
+      }
+
+      .container {
+        max-width: 1200px;
+        width: 100%;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+      }
+
+      header {
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        color: white;
+        padding: 2rem;
+        text-align: center;
+      }
+
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 1rem;
+      }
+
+      .webgpu-status {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50px;
+        font-size: 0.9rem;
+        margin-top: 1rem;
+      }
+
+      .main-content {
+        display: grid;
+        grid-template-columns: 300px 1fr;
+        min-height: 800px;
+      }
+
+      .sidebar {
+        background: #f8f9fa;
+        padding: 2rem;
+        border-right: 1px solid #e9ecef;
+      }
+
+      .editor-area {
+        position: relative;
+        overflow: hidden;
+      }
+
+      #editor-canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+        background: white;
+      }
+
+      .toolbar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #e9ecef;
+      }
+
+      .tool-group {
+        margin-bottom: 2rem;
+      }
+
+      .tool-group h3 {
+        color: #495057;
+        margin-bottom: 1rem;
+        font-size: 1.1rem;
+      }
+
+      button {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+        color: white;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(106, 17, 203, 0.3);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      button.secondary {
+        background: #6c757d;
+      }
+
+      button.success {
+        background: #28a745;
+      }
+
+      button.danger {
+        background: #dc3545;
+      }
+
+      .file-input-wrapper {
+        position: relative;
+        overflow: hidden;
+        display: inline-block;
+      }
+
+      .file-input-wrapper input[type="file"] {
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+      }
+
+      .stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        background: white;
+        padding: 1rem;
+        border-radius: 10px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        margin-top: 2rem;
+      }
+
+      .stat-item {
+        text-align: center;
+      }
+
+      .stat-label {
+        font-size: 0.8rem;
+        color: #6c757d;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+
+      .stat-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+        color: #495057;
+        margin-top: 0.25rem;
+      }
+
+      .log {
+        background: #f8f9fa;
+        padding: 1rem;
+        border-radius: 10px;
+        margin-top: 2rem;
+        font-family: 'Monaco', 'Courier New', monospace;
+        font-size: 0.9rem;
+        max-height: 200px;
+        overflow-y: auto;
+      }
+
+      .log-entry {
+        padding: 0.25rem 0;
+        border-bottom: 1px solid #e9ecef;
+      }
+
+      .log-entry:last-child {
+        border-bottom: none;
+      }
+
+      .log-time {
+        color: #6c757d;
+        font-size: 0.8rem;
+      }
+
+      .log-message {
+        color: #495057;
+      }
+
+      footer {
+        text-align: center;
+        padding: 2rem;
+        color: white;
+        margin-top: 2rem;
+        opacity: 0.8;
+      }
+
+      @media (max-width: 1024px) {
+        .main-content {
+          grid-template-columns: 1fr;
+        }
+        
+        .sidebar {
+          border-right: none;
+          border-bottom: 1px solid #e9ecef;
+        }
+      }
+    </style>
   </head>
   <body>
-    <div id="app"></div>
+    <div class="container">
+      <header>
+        <h1>🎨 Design Editor</h1>
+        <p class="subtitle">High-performance WebGPU-based design tool</p>
+        <div class="webgpu-status" id="webgpu-status">
+          Checking WebGPU support...
+        </div>
+      </header>
+
+      <div class="main-content">
+        <div class="sidebar">
+          <div class="toolbar">
+            <button id="add-rect-btn">
+              <span>🟦</span> Add Rectangle
+            </button>
+            <div class="file-input-wrapper">
+              <button id="load-image-btn">
+                <span>🖼️</span> Load Image
+              </button>
+              <input type="file" id="image-input" accept="image/*" multiple>
+            </div>
+            <button id="export-btn" class="success">
+              <span>💾</span> Export PNG
+            </button>
+            <button id="clear-btn" class="danger">
+              <span>🗑️</span> Clear Canvas
+            </button>
+          </div>
+
+          <div class="tool-group">
+            <h3>📊 Performance Stats</h3>
+            <div class="stats">
+              <div class="stat-item">
+                <div class="stat-label">FPS</div>
+                <div class="stat-value" id="fps-counter">--</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">Objects</div>
+                <div class="stat-value" id="object-counter">0</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">Memory</div>
+                <div class="stat-value" id="memory-usage">-- MB</div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-label">GPU Load</div>
+                <div class="stat-value" id="gpu-load">--%</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="tool-group">
+            <h3>📝 Activity Log</h3>
+            <div class="log" id="activity-log">
+              <div class="log-entry">
+                <span class="log-time">[00:00:00]</span>
+                <span class="log-message">Editor initialized</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="editor-area">
+          <canvas id="editor-canvas"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>Design Editor v0.1.0 | Built with ❤️ and WebGPU</p>
+    </footer>
+
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
