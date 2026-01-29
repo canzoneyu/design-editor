@@ -1,55 +1,26 @@
 {
-  "name": "design-editor",
-  "private": false,
-  "version": "0.1.0",
-  "type": "module",
-  "description": "A high-performance WebGPU-based design editor",
-  "main": "./dist/design-editor.umd.js",
-  "module": "./dist/design-editor.es.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "import": "./dist/design-editor.es.js",
-      "require": "./dist/design-editor.umd.js"
-    }
+  "compilerOptions": {
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "types": ["vite/client"],
+    "skipLibCheck": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "moduleDetection": "force",
+    "noEmit": true,
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "erasableSyntaxOnly": true,
+    "noFallthroughCasesInSwitch": true,
+    "noUncheckedSideEffectImports": true
   },
-  "files": [
-    "dist"
-  ],
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "preview": "vite preview",
-    "build:types": "tsc --emitDeclarationOnly --outDir dist",
-    "build:all": "npm run build:types && npm run build"
-  },
-  "devDependencies": {
-    "@types/gl-matrix": "^3.3.0",
-    "@webgpu/types": "^0.1.38",
-    "typescript": "^5.2.2",
-    "vite": "^5.0.0",
-    "vite-plugin-dts": "^3.6.0"
-  },
-  "dependencies": {
-    "gl-matrix": "^3.4.3"
-  },
-  "keywords": [
-    "webgpu",
-    "design",
-    "editor",
-    "graphics",
-    "canvas",
-    "svg",
-    "psd",
-    "pdf"
-  ],
-  "author": "Your Name",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/yourusername/design-editor.git"
-  },
-  "bugs": {
-    "url": "https://github.com/yourusername/design-editor/issues"
-  }
+  "include": ["src"]
 }
